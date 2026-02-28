@@ -2,10 +2,15 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY ../package.json ../yarn.lock ./
-RUN yarn install --frozen-lockfile
+COPY package.json yarn.lock ./
 
-COPY ../ ./
+RUN yarn config set network-timeout 300000 && \
+    yarn config set network-concurrency 1 && \
+    yarn install --frozen-lockfile --network-timeout 300000
+
+COPY . .
+
+RUN rm -rf .next
 RUN yarn build
 
 FROM node:20-alpine AS runner
@@ -19,6 +24,7 @@ COPY --from=builder /app/package.json ./
 COPY --from=builder /app/.next .next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.env* ./
 
 EXPOSE 3000
 
