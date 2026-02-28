@@ -1,5 +1,6 @@
 services:
   app:
+    container_name: app-next
     build:
       context: ..
       dockerfile: infra/Dockerfile
