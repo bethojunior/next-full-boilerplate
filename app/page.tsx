@@ -1,5 +1,5 @@
-import AppFlow from "@/components/app-flow"
+import LoginComponent from '@/components/auth/login-component'
 
 export default function Home() {
-  return <AppFlow />
+  return <LoginComponent />
 }

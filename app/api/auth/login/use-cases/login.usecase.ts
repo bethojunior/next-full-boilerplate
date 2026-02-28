@@ -1,6 +1,7 @@
 import { signJwt } from '@/src/lib/jwt'
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
+import { NextResponse } from 'next/server'
 
 const prisma = new PrismaClient()
 
@@ -9,22 +10,15 @@ export class LoginUseCase {
     try {
       const user = await prisma.user.findUnique({
         where: { email: data.email },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          password: true,
-          createdAt: true
-        }
       })
 
       if (!user) {
-        return { success: false, message: 'User not found' }
+        return NextResponse.json({ message: 'Usuário não encontrado' }, { status: 404 })
       }
 
       const match = await bcrypt.compare(data.password, user.password)
       if (!match) {
-        return { success: false, message: 'Invalid email or password' }
+        return NextResponse.json({ message: 'Email ou senha inválidos' }, { status: 401 })
       }
 
       const payload = { sub: user.id, email: user.email, name: user.name }
@@ -32,14 +26,14 @@ export class LoginUseCase {
       const accessToken = signJwt(payload)
       const { password, ...userSafe } = user
 
-      return {
+      const result = {
         success: true,
         user: userSafe,
-        token: accessToken
+        token: accessToken,
       }
+      return NextResponse.json({ user: result.user, token: result.token }, { status: 200 })
     } catch (error) {
-      console.error('[LOGIN USECASE]', error)
-      return { success: false, message: 'Erro ao tentar logar' }
+      return NextResponse.json({ message: (error as Error).message }, { status: 500 })
     }
   }
 }

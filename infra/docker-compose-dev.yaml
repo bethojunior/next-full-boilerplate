@@ -1,20 +1,10 @@
 services:
-  app:
-    build:
-      context: ..
-      dockerfile: infra/Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-    restart: unless-stopped
-
   postgres:
     image: postgres:latest
     container_name: app-postgres
     restart: always
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
@@ -22,7 +12,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U conta -d mydatabase"]
+      test: ['CMD-SHELL', 'pg_isready -U root -d mydatabase']
       interval: 5s
       timeout: 3s
       retries: 5

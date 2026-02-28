@@ -1,17 +1,26 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster as SonnerToaster } from '@/components/ui/sonner'
+import { Toaster } from '@/components/ui/toaster'
+import { AuthProvider } from '@/contexts/AuthContext'
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-sans',
+})
 
 export const metadata: Metadata = {
-  title: "704 Apps",
-  description: "QRCode Generator",
-  generator: '704',
-};
+  title: 'My Project Title',
+  description: 'My Project Description',
+  generator: 'My Project',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'My Project',
+  },
+}
 
 export default function RootLayout({
   children,
@@ -19,17 +28,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <body className={inter.className} suppressHydrationWarning>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+    <html lang='pt-BR' suppressHydrationWarning className='{inter.variable}'>
+      <body>
+          <AuthProvider>
             {children}
             <Toaster />
-        </ThemeProvider>
+            <SonnerToaster />
+          </AuthProvider>
       </body>
     </html>
   )

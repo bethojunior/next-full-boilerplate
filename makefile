@@ -3,8 +3,8 @@
 build:
 	docker-compose -f infra/docker-compose.yaml build
 
-up:
-	docker-compose -f infra/docker-compose.yaml up -d
+up-dev:
+	docker-compose -f infra/docker-compose-dev.yaml up -d
 
-down:
-	docker-compose -f infra/docker-compose.yaml down
+down-dev:
+	docker-compose -f infra/docker-compose-dev.yaml down
